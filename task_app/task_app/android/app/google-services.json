@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "637059358629",
+    "project_id": "taskapp-41167",
+    "storage_bucket": "taskapp-41167.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637059358629:android:80a78ca1ac425583a4124c",
+        "android_client_info": {
+          "package_name": "com.amisha.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXv5lWrXO-EYX87HKL_EBDiIi8or98H4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

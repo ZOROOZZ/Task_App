@@ -1,0 +1,2 @@
+C:/Users/Lenovo/Desktop/flutterapps/task_app/android/app/.cxx/RelWithDebInfo/f49346k6/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Lenovo/Desktop/flutterapps/task_app/android/app/.cxx/RelWithDebInfo/f49346k6/x86_64/CMakeFiles/rebuild_cache.dir
