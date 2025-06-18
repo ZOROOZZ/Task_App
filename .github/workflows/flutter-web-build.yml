@@ -20,33 +20,30 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.4'  # Contains Dart 3.5.4 exactly
+          flutter-version: '3.22.1'  # Known good version with Dart 3.5.4
           channel: stable
           cache: true
 
-      # 3. Verify versions (critical debugging step)
-      - name: Verify Dart SDK version
+      # 3. Verify versions
+      - name: Verify Dart version
         run: |
           echo "Flutter version:"
           flutter --version
           echo "Dart version:"
           dart --version
-          echo "PATH:"
-          echo $PATH
-
-      # 4. Setup web
-      - name: Enable web support
-        run: flutter config --enable-web
-
-      # 5. Get dependencies with explicit Dart version check
-      - name: Install dependencies
-        working-directory: ./task_app/task_app
-        run: |
-          flutter pub get
           if ! dart --version 2>&1 | grep -q "3.5.4"; then
-            echo "ERROR: Wrong Dart version!"
+            echo "::error::Wrong Dart version detected!"
             exit 1
           fi
+
+      # 4. Setup web
+      - name: Enable web
+        run: flutter config --enable-web
+
+      # 5. Get dependencies
+      - name: Get packages
+        working-directory: ./task_app/task_app
+        run: flutter pub get
 
       # 6. Build web app
       - name: Build web
