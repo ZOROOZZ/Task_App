@@ -8,30 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Required for deployment
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Install Flutter with correct Dart version
+      - name: Clone Flutter (latest stable) and set PATH
         run: |
-          # Install Flutter version that includes Dart 3.5.4+
-          git clone https://github.com/flutter/flutter.git --branch 3.22.4 --depth 1
+          git clone https://github.com/flutter/flutter.git --branch stable --depth 1
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
           echo "$PWD/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
-          
-      - name: Verify versions
-        run: |
-          echo "Flutter version:"
-          flutter --version
-          echo "Dart version:"
-          dart --version
-          if ! dart --version 2>&1 | grep -q "3.5.4"; then
-            echo "::error::Incorrect Dart version detected!"
-            exit 1
-          fi
 
       - name: Run flutter doctor
         run: flutter doctor -v
@@ -40,19 +26,18 @@ jobs:
         run: flutter config --enable-web
 
       - name: Install dependencies
-        working-directory: ./task_app/task_app
-        run: flutter pub get
+        run: |
+          cd task_app/task_app
+          flutter pub get
 
       - name: Build Flutter web
-        working-directory: ./task_app/task_app
-        run: flutter build web --release
+        run: |
+          cd task_app/task_app
+          flutter build web
 
       - name: Deploy to deploy branch
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Using PAT
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: task_app/task_app/build/web
           publish_branch: deploy
-          force_orphan: true  # Ensures clean deploy branch
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
