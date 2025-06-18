@@ -13,22 +13,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Clone Flutter SDK (v3.22.1)
+      - name: Clone Flutter SDK v3.22.1 (Dart 3.5.4)
         run: |
           git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
-          echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
-          echo "FLUTTER_HOME=$(pwd)/flutter" >> $GITHUB_ENV
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+          echo "FLUTTER_HOME=$PWD/flutter" >> $GITHUB_ENV
           flutter/bin/flutter doctor
 
-      - name: Enable web support
+      - name: Enable Flutter web
         run: flutter config --enable-web
 
-      - name: Install dependencies
+      - name: Get dependencies
         run: |
           cd task_app/task_app
           flutter pub get
 
-      - name: Build Flutter web
+      - name: Build for web
         run: |
           cd task_app/task_app
           flutter build web
