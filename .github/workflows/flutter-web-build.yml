@@ -16,22 +16,24 @@ jobs:
       - name: Clone Flutter 3.22.1 (Dart 3.5.4)
         run: |
           git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
-          echo "$PWD/flutter/bin" >> $GITHUB_PATH
-          echo "FLUTTER_HOME=$PWD/flutter" >> $GITHUB_ENV
-
-      - name: Run flutter doctor (verify Dart 3.5.4)
-        run: flutter doctor
+          export PATH="$PWD/flutter/bin:$PATH"
+          flutter --version
+          flutter doctor
 
       - name: Enable web support
-        run: flutter config --enable-web
-
-      - name: Get dependencies
         run: |
+          export PATH="$PWD/flutter/bin:$PATH"
+          flutter config --enable-web
+
+      - name: Install dependencies
+        run: |
+          export PATH="$PWD/flutter/bin:$PATH"
           cd task_app/task_app
           flutter pub get
 
-      - name: Build web
+      - name: Build Flutter Web
         run: |
+          export PATH="$PWD/flutter/bin:$PATH"
           cd task_app/task_app
           flutter build web
 
