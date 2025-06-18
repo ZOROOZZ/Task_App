@@ -38,6 +38,6 @@ jobs:
       - name: Deploy to deploy branch
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           publish_dir: task_app/task_app/build/web
           publish_branch: deploy
