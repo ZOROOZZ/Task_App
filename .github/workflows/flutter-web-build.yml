@@ -13,18 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Clone Flutter 3.22.1
+      - name: Clone Flutter 3.22.1 and set PATH
         run: |
           git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
-          echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-          echo "$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+          echo "$PWD/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
 
-      - name: Confirm Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
+      - name: Run Flutter Doctor (Confirm Dart SDK 3.5.4)
+        run: flutter doctor
 
-      - name: Enable web support
+      - name: Enable Web support
         run: flutter config --enable-web
 
       - name: Install dependencies
