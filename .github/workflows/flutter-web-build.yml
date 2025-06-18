@@ -9,35 +9,44 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for gh-pages deployment
+      contents: write
 
     steps:
       # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install Flutter with specific version (contains Dart 3.5.4+)
+      # 2. Install exact Flutter version with correct Dart SDK
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'  # Contains Dart 3.5.4
+          flutter-version: '3.22.4'  # Contains Dart 3.5.4 exactly
           channel: stable
           cache: true
 
-      # 3. Verify installations
-      - name: Check versions
+      # 3. Verify versions (critical debugging step)
+      - name: Verify Dart SDK version
         run: |
+          echo "Flutter version:"
           flutter --version
+          echo "Dart version:"
           dart --version
+          echo "PATH:"
+          echo $PATH
 
       # 4. Setup web
-      - name: Enable web
+      - name: Enable web support
         run: flutter config --enable-web
 
-      # 5. Get dependencies
-      - name: Get packages
-        working-directory: ./task_app/task_app  # Better than cd
-        run: flutter pub get
+      # 5. Get dependencies with explicit Dart version check
+      - name: Install dependencies
+        working-directory: ./task_app/task_app
+        run: |
+          flutter pub get
+          if ! dart --version 2>&1 | grep -q "3.5.4"; then
+            echo "ERROR: Wrong Dart version!"
+            exit 1
+          fi
 
       # 6. Build web app
       - name: Build web
