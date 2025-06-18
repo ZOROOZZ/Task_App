@@ -3,35 +3,41 @@ name: Build Flutter Web and Deploy to Cloudflare Pages
 on:
   push:
     branches:
-      - main  # or your working branch
+      - main
 
 jobs:
   build:
-    name: Build Flutter Web
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'  # use your Flutter version
+          flutter-version: '3.19.6'
           channel: 'stable'
+          cache: true
 
       - name: Enable web support
         run: flutter config --enable-web
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          cd task_app/task_app
+          flutter pub get
 
-      - name: Build web
-        run: flutter build web
+      - name: Build Flutter web
+        run: |
+          cd task_app/task_app
+          flutter build web
 
-      - name: Upload build to deploy branch
+      - name: Deploy to deploy branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          publish_branch: deploy  # this is the branch Cloudflare Pages will read from
+          publish_dir: task_app/task_app/build/web
+          publish_branch: deploy
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
