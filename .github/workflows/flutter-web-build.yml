@@ -16,9 +16,9 @@ jobs:
       - name: Clone Flutter SDK (v3.22.1)
         run: |
           git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
-          echo "FLUTTER_BIN=$PWD/flutter/bin" >> $GITHUB_ENV
-          echo "$PWD/flutter/bin" >> $GITHUB_PATH
-          flutter/bin/flutter --version
+          echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
+          echo "FLUTTER_HOME=$(pwd)/flutter" >> $GITHUB_ENV
+          flutter/bin/flutter doctor
 
       - name: Enable web support
         run: flutter config --enable-web
