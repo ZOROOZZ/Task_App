@@ -9,31 +9,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      FLUTTER_HOME: ${{ github.workspace }}/flutter
+      PATH: ${{ github.workspace }}/flutter/bin:${{ github.workspace }}/flutter/bin/cache/dart-sdk/bin:/usr/local/bin:/usr/bin:/bin
+
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Clone Flutter 3.22.1 (Dart 3.5.4)
         run: |
-          git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
-          export PATH="$PWD/flutter/bin:$PATH"
-          flutter --version
-          flutter doctor
+          git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1 flutter
+          flutter/bin/flutter --version
+          flutter/bin/flutter doctor
 
       - name: Enable web support
-        run: |
-          export PATH="$PWD/flutter/bin:$PATH"
-          flutter config --enable-web
+        run: flutter config --enable-web
 
       - name: Install dependencies
         run: |
-          export PATH="$PWD/flutter/bin:$PATH"
           cd task_app/task_app
           flutter pub get
 
       - name: Build Flutter Web
         run: |
-          export PATH="$PWD/flutter/bin:$PATH"
           cd task_app/task_app
           flutter build web
 
