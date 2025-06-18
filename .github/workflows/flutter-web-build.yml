@@ -16,22 +16,21 @@ jobs:
       - name: Install Flutter 3.22.1
         run: |
           git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
-          echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
-          echo "FLUTTER_HOME=$(pwd)/flutter" >> $GITHUB_ENV
+          echo "FLUTTER_BIN=$(pwd)/flutter/bin" >> $GITHUB_ENV
           $(pwd)/flutter/bin/flutter --version
 
       - name: Enable web support
-        run: flutter config --enable-web
+        run: $FLUTTER_BIN/flutter config --enable-web
 
       - name: Install dependencies
         run: |
           cd task_app/task_app
-          flutter pub get
+          $FLUTTER_BIN/flutter pub get
 
       - name: Build Flutter web
         run: |
           cd task_app/task_app
-          flutter build web
+          $FLUTTER_BIN/flutter build web
 
       - name: Deploy to GitHub deploy branch
         uses: peaceiris/actions-gh-pages@v3
