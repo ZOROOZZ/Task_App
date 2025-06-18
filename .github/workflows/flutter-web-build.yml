@@ -13,9 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Clone Flutter 3.22.1 and set PATH
+      - name: Clone Flutter (latest stable) and set PATH
         run: |
-          git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
+          git clone https://github.com/flutter/flutter.git --branch stable --depth 1
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
           echo "$PWD/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
 
