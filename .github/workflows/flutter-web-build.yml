@@ -1,4 +1,4 @@
-name: Build Flutter Web and Deploy to GitHub Deploy Branch
+name: Build Flutter Web and Deploy to Deploy Branch
 
 on:
   push:
@@ -13,9 +13,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Clone Flutter SDK (v3.5.4)
+      - name: Clone Flutter SDK (v3.22.1)
         run: |
-          git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.5.4
+          git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
           echo "FLUTTER_BIN=$PWD/flutter/bin" >> $GITHUB_ENV
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
           flutter/bin/flutter --version
