@@ -6,55 +6,53 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write  # Required for deployment
 
     steps:
-      # 1. Checkout code
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Install newer Flutter version with Dart 3.5.4+
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.6'  # Contains Dart 3.6.0
-          channel: stable
-          cache: true
-
-      # 3. Verify versions (critical)
-      - name: Verify Dart version
+      - name: Install Flutter with correct Dart version
+        run: |
+          # Install Flutter version that includes Dart 3.5.4+
+          git clone https://github.com/flutter/flutter.git --branch 3.22.4 --depth 1
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+          echo "$PWD/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+          
+      - name: Verify versions
         run: |
           echo "Flutter version:"
           flutter --version
           echo "Dart version:"
           dart --version
-          if ! dart --version 2>&1 | grep -q "3.[5-9]"; then
-            echo "::error::Dart version must be 3.5.4 or higher!"
+          if ! dart --version 2>&1 | grep -q "3.5.4"; then
+            echo "::error::Incorrect Dart version detected!"
             exit 1
           fi
 
-      # 4. Setup web
-      - name: Enable web
+      - name: Run flutter doctor
+        run: flutter doctor -v
+
+      - name: Enable web support
         run: flutter config --enable-web
 
-      # 5. Get dependencies
-      - name: Get packages
+      - name: Install dependencies
         working-directory: ./task_app/task_app
         run: flutter pub get
 
-      # 6. Build web app
-      - name: Build web
+      - name: Build Flutter web
         working-directory: ./task_app/task_app
         run: flutter build web --release
 
-      # 7. Deploy to GitHub Pages
-      - name: Deploy
+      - name: Deploy to deploy branch
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          publish_dir: ./task_app/task_app/build/web
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Using PAT
+          publish_dir: task_app/task_app/build/web
           publish_branch: deploy
-          force_orphan: true
+          force_orphan: true  # Ensures clean deploy branch
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
