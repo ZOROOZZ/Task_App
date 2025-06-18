@@ -1,4 +1,4 @@
-name: Build Flutter Web and Deploy to Cloudflare Pages
+name: Build Flutter Web and Deploy
 
 on:
   push:
@@ -13,18 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Clone Flutter 3.22.1 and Set PATH
+      - name: Clone Flutter 3.22.1 and set PATH
         run: |
-          git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
+          git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
           echo "$PWD/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
 
-      - name: Confirm Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
+      - name: Run flutter doctor
+        run: flutter doctor -v
 
-      - name: Enable Web support
+      - name: Enable web support
         run: flutter config --enable-web
 
       - name: Install dependencies
@@ -32,7 +30,7 @@ jobs:
           cd task_app/task_app
           flutter pub get
 
-      - name: Build Web App
+      - name: Build Flutter web
         run: |
           cd task_app/task_app
           flutter build web
