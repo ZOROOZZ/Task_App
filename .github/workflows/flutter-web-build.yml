@@ -1,4 +1,4 @@
-name: Build Flutter Web and Deploy to Cloudflare Pages
+name: Build Flutter Web and Deploy to GitHub Deploy Branch
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6'
+          flutter-version: '3.22.1'   # ✅ This includes Dart 3.5.4
           channel: 'stable'
           cache: true
 
@@ -33,7 +33,7 @@ jobs:
           cd task_app/task_app
           flutter build web
 
-      - name: Deploy to deploy branch
+      - name: Deploy to GitHub deploy branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
