@@ -18,7 +18,8 @@ jobs:
           git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
           echo "FLUTTER_HOME=$PWD/flutter" >> $GITHUB_ENV
-          flutter/bin/flutter doctor
+          export PATH="$PWD/flutter/bin:$PATH"
+          flutter doctor
 
       - name: Enable Flutter web
         run: flutter config --enable-web
