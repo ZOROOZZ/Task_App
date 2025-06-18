@@ -1,4 +1,4 @@
-name: Build Flutter Web and Deploy to Deploy Branch
+name: Build Flutter Web and Deploy
 
 on:
   push:
@@ -10,18 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Clone Flutter SDK v3.22.1 (Dart 3.5.4)
+      - name: Clone Flutter 3.22.1 (Dart 3.5.4)
         run: |
-          git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
+          git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
           echo "$PWD/flutter/bin" >> $GITHUB_PATH
           echo "FLUTTER_HOME=$PWD/flutter" >> $GITHUB_ENV
-          export PATH="$PWD/flutter/bin:$PATH"
-          flutter doctor
 
-      - name: Enable Flutter web
+      - name: Run flutter doctor (verify Dart 3.5.4)
+        run: flutter doctor
+
+      - name: Enable web support
         run: flutter config --enable-web
 
       - name: Get dependencies
@@ -29,7 +30,7 @@ jobs:
           cd task_app/task_app
           flutter pub get
 
-      - name: Build for web
+      - name: Build web
         run: |
           cd task_app/task_app
           flutter build web
