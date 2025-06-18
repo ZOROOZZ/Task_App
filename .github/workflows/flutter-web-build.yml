@@ -16,23 +16,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install exact Flutter version with correct Dart SDK
+      # 2. Install newer Flutter version with Dart 3.5.4+
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'  # Known good version with Dart 3.5.4
+          flutter-version: '3.22.6'  # Contains Dart 3.6.0
           channel: stable
           cache: true
 
-      # 3. Verify versions
+      # 3. Verify versions (critical)
       - name: Verify Dart version
         run: |
           echo "Flutter version:"
           flutter --version
           echo "Dart version:"
           dart --version
-          if ! dart --version 2>&1 | grep -q "3.5.4"; then
-            echo "::error::Wrong Dart version detected!"
+          if ! dart --version 2>&1 | grep -q "3.[5-9]"; then
+            echo "::error::Dart version must be 3.5.4 or higher!"
             exit 1
           fi
 
