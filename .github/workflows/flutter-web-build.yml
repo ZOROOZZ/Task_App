@@ -9,26 +9,26 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Needed for gh-pages action to push to deploy branch
+      contents: write  # Required for gh-pages deployment
 
     steps:
       # 1. Checkout code
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Needed for peaceiris/actions-gh-pages
+        uses: actions/checkout@v4
 
-      # 2. Setup Flutter
+      # 2. Install Flutter with specific version (contains Dart 3.5.4+)
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'  # Or 'stable' for latest stable version
-          channel: 'stable'
+          flutter-version: '3.22.2'  # Contains Dart 3.5.4
+          channel: stable
           cache: true
 
-      # 3. Verify installation
-      - name: Flutter doctor
-        run: flutter doctor -v
+      # 3. Verify installations
+      - name: Check versions
+        run: |
+          flutter --version
+          dart --version
 
       # 4. Setup web
       - name: Enable web
@@ -36,24 +36,19 @@ jobs:
 
       # 5. Get dependencies
       - name: Get packages
-        run: |
-          cd task_app/task_app
-          flutter pub get
+        working-directory: ./task_app/task_app  # Better than cd
+        run: flutter pub get
 
       # 6. Build web app
       - name: Build web
-        run: |
-          cd task_app/task_app
-          flutter build web --release
+        working-directory: ./task_app/task_app
+        run: flutter build web --release
 
-      # 7. Deploy to gh-pages
-      - name: Deploy to GitHub Pages
+      # 7. Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          publish_dir: task_app/task_app/build/web
-          publish_branch: deploy  # The branch you want to deploy to
-          force_orphan: true     # Ensures clean history
-          keep_files: false       # Remove existing files
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+          publish_dir: ./task_app/task_app/build/web
+          publish_branch: deploy
+          force_orphan: true
